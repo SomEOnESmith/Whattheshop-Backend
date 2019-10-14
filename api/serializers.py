@@ -18,6 +18,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
         new_user.save()
         return validated_data
 
+
 class CurrencyListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Crypto
