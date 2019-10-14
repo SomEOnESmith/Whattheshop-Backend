@@ -13,3 +13,8 @@ class Wallet(models.Model):
     money = models.DecimalField(max_digits=19, decimal_places=10)
     profile = models.OneToOneField(Profile, on_delete=models.CASCADE, related_name="wallet")
 
+class Crypto(models.Model):
+	currency = models.CharField(max_length=150)
+	price = models.DecimalField(max_digits= 10, decimal_places=3)
+	image = models.ImageField(null=True, blank=True)
+	rate_change = models.DecimalField(max_digits=6, decimal_places=3)
