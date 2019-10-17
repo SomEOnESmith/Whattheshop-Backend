@@ -63,6 +63,6 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         token['email'] = user.email
         token['birth_date'] = user.profile.birth_date
         token['phone_number'] = user.profile.phone_number
-        token['image'] = user.profile.image
+        # token['image'] = user.profile.image.url
         
         return token
