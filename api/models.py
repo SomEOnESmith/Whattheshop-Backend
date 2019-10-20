@@ -20,7 +20,7 @@ class Crypto(models.Model):
 
 
 class Transaction(models.Model):
-    datetime = models.DateTimeField(auto_now_add=True)
+    datetime = models.DateTimeField(null=True)
     is_paid = models.BooleanField(default=True)
     total = models.DecimalField(max_digits=6, decimal_places=3)
     # Add related name
@@ -34,6 +34,12 @@ class TransactionItem(models.Model):
     quantity = models.PositiveIntegerField()
     
 
+class CreditCard(models.Model):
+    # Adjust related names
+    card_number = models.CharField(max_length=16)
+    card_name = models.TextField(null=True)
+    card_date = models.CharField(max_length=4)
+    card_cvv = models.CharField(max_length=3)
 
 
     

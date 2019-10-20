@@ -5,7 +5,7 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 
-from .models import Crypto, Profile
+from .models import Crypto, Profile, CreditCard
 
 
 
@@ -66,3 +66,8 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         # token['image'] = user.profile.image.url
         
         return token
+
+class CreditCardSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CreditCard
+        fields = "__all__"
