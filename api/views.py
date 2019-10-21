@@ -4,8 +4,8 @@ from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from .serializers import UserCreateSerializer, CurrencyListSerializer,ProfileDetailViewSerializer, MyTokenObtainPairSerializer, CreditCardSerializer
-from .models import Crypto, Profile, CreditCard
+from .serializers import UserCreateSerializer, CurrencyListSerializer,ProfileDetailViewSerializer, MyTokenObtainPairSerializer, TransactionSerializer, ItemTransactionSerializer, OrderSerializer
+from .models import Crypto, Profile, Transaction, TransactionItem
 
 
 class UserCreateAPIView(CreateAPIView):
@@ -32,9 +32,28 @@ class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
 
 
+# newwwwwwwwwwwww
+class CheckoutCart(APIView):
+        def post(self, request):
+            transaction = Transaction.objects.create(user=request.user)
+            try:
+                for item_transaction in request.data:
+                    ItemTransaction.objects.create(
+                        item_id = item_transaction["item"],
+                        transaction = transaction,
+                        quantity = item_transaction["quantity"]
+                    )
+                serializer_class = OrderSerializer(transaction)
+            except:
+                return Response(serializer_class.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer_class.data,status=status.HTTP_200_OK)
+    
 
-class CreditCardView(APIView):
-    queryset = CreditCard.objects.all()
-    serializer_class = CreditCardSerializer
+
+
+
+# class CreditCardView(APIView):
+#     queryset = CreditCard.objects.all()
+#     serializer_class = CreditCardSerializer
 # create api view that prints whatever is recieving
 # class PrintView(ListAPIView):
