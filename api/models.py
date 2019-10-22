@@ -23,12 +23,10 @@ class Transaction(models.Model):
     datetime = models.DateTimeField(null=True)
     is_paid = models.BooleanField(default=True)
     total = models.DecimalField(max_digits=10, decimal_places=3, null=True)
-    # Add related name
-    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="transaction")
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="transactions")
 
 # middle man
 class TransactionItem(models.Model):
-    # Adjust related names
     currency = models.ForeignKey(Crypto, on_delete=models.CASCADE)
     transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE, related_name="transaction_items")
     quantity = models.FloatField()

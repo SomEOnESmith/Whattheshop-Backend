@@ -65,7 +65,7 @@ class TransactionDetailSerializer(serializers.ModelSerializer):
 # //////////////////////////////////////////////////////////////////////
 class ProfileDetailViewSerializer(serializers.ModelSerializer):
     user = UserSerializer()
-    tranactions = TransactionDetailSerializer(many=True)
+    transactions = TransactionDetailSerializer(many=True)
     class Meta:
         model = Profile
         fields = [  
@@ -73,7 +73,7 @@ class ProfileDetailViewSerializer(serializers.ModelSerializer):
             'image',
             'phone_number',
             'birth_date',
-            'tranactions'
+            'transactions'
         ]   
         
 
