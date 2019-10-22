@@ -24,7 +24,7 @@ class ProfileDetailAPIView(RetrieveAPIView):
     def get(self, request, format=None):
         if request.user.is_anonymous:
             return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
-        profile = ProfileSerializer(Profile.objects.get(user=request.user))
+        profile = ProfileDetailViewSerializer(Profile.objects.get(user=request.user))
         return Response(profile.data, status=HTTP_200_OK)
 
 
