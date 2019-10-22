@@ -47,27 +47,25 @@ class TransactionSerializer(serializers.ModelSerializer):
 
 # newwwwwwww
 class ItemTransactionSerializer(serializers.ModelSerializer):
-        transcation = TransactionSerializer()
-    
 
         class Meta: 
             model = TransactionItem
-            fields = ["transcation", "quantity"]
+            fields = ["id","transaction", "quantity"]
 
 
 # newwwwwww
-class OrderSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
-    item_transaction = ItemTransactionSerializer(many=True);
+class TransactionDetailSerializer(serializers.ModelSerializer):
+    transaction_items = ItemTransactionSerializer(many=True);
 
 
     class Meta:
         model = Transaction
-        fields = ["user", "item_transaction"]
+        fields = "__all__"
 
 # //////////////////////////////////////////////////////////////////////
 class ProfileDetailViewSerializer(serializers.ModelSerializer):
     user = UserSerializer()
+    tranactions = TransactionDetailSerializer(many=True)
     class Meta:
         model = Profile
         fields = [  
@@ -75,6 +73,7 @@ class ProfileDetailViewSerializer(serializers.ModelSerializer):
             'image',
             'phone_number',
             'birth_date',
+            'tranactions'
         ]   
         
 
@@ -109,10 +108,6 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 
 #  ////////////////////////////////////////////////////////////////////////////////////
 # after ordering (history)
-class TransactionSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Transaction
-        fields = "__all__"
 
 # class WalletSerializer(serializers.ModelSerializer):
 #     product = TransactionSerializer()

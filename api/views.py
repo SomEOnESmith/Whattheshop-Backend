@@ -4,9 +4,10 @@ from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from .serializers import UserCreateSerializer, CurrencyListSerializer,ProfileDetailViewSerializer, MyTokenObtainPairSerializer, TransactionSerializer, ItemTransactionSerializer, OrderSerializer
+from .serializers import UserCreateSerializer, CurrencyListSerializer,ProfileDetailViewSerializer, MyTokenObtainPairSerializer, TransactionSerializer, ItemTransactionSerializer, TransactionDetailSerializer
 from .models import Crypto, Profile, Transaction, TransactionItem
 
+from decimal import *
 
 class UserCreateAPIView(CreateAPIView):
     serializer_class = UserCreateSerializer
@@ -35,18 +36,21 @@ class MyTokenObtainPairView(TokenObtainPairView):
 # newwwwwwwwwwwww
 class CheckoutCart(APIView):
         def post(self, request):
-            transaction = Transaction.objects.create(user=request.user)
+            profile = Profile.objects.get(user=request.user)
+            transaction = Transaction.objects.create(profile=profile)
             try:
                 for item_transaction in request.data:
-                    ItemTransaction.objects.create(
-                        item_id = item_transaction["item"],
+                    item_transaction["quantity"] = float(item_transaction["quantity"])
+                    currency = Crypto.objects.get(id=item_transaction["currency"])
+                    transaction_item = TransactionItem.objects.create(
+                        currency = currency,
                         transaction = transaction,
                         quantity = item_transaction["quantity"]
                     )
-                serializer_class = OrderSerializer(transaction)
+                serializer_class = TransactionDetailSerializer(transaction)
             except:
-                return Response(serializer_class.errors, status=status.HTTP_400_BAD_REQUEST)
-            return Response(serializer_class.data,status=status.HTTP_200_OK)
+                return Response(status=HTTP_400_BAD_REQUEST)
+            return Response(serializer_class.data,status=HTTP_200_OK)
     
 
 
