@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Profile, Crypto
+from .models import Profile, Crypto, Transaction, TransactionItem
 
 
 # Customize admin page to track transations for different currencies
@@ -7,3 +7,7 @@ from .models import Profile, Crypto
 admin.site.register(Profile)
 
 admin.site.register(Crypto)
+
+admin.site.register(Transaction)
+
+admin.site.register(TransactionItem)
