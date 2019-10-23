@@ -25,20 +25,11 @@ class Transaction(models.Model):
     total = models.DecimalField(max_digits=10, decimal_places=3, null=True)
     profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="transactions")
 
-# middle man
+
 class TransactionItem(models.Model):
     currency = models.ForeignKey(Crypto, on_delete=models.CASCADE)
     transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE, related_name="transaction_items")
     quantity = models.FloatField()
- 
-
-
-# class CreditCard(models.Model):
-#     # Adjust related names
-#     card_number = models.CharField(max_length=16)
-#     card_name = models.TextField(null=True)
-#     card_date = models.CharField(max_length=4)
-#     card_cvv = models.CharField(max_length=3)
 
 
     

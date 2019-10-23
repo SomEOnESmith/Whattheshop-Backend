@@ -19,8 +19,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
         new_user = User(**validated_data)
         new_user.set_password(validated_data['password'])
         new_user.save()
-        new_profile = Profile.objects.create(user=new_user)
-        new_profile.save()
+        Profile.objects.create(user=new_user)
         return validated_data
 
 
@@ -39,33 +38,27 @@ class UserSerializer(serializers.ModelSerializer):
             'last_name',
             'email',
         ]
-#  newwwwwww
-class TransactionSerializer(serializers.ModelSerializer):
-        class Meta:
-            model = Transaction
-            fields = "__all__"
 
-# newwwwwwww
+
 class ItemTransactionSerializer(serializers.ModelSerializer):
+    class Meta: 
+        model = TransactionItem
+        fields = ["id","transaction", "quantity"]
 
-        class Meta: 
-            model = TransactionItem
-            fields = ["id","transaction", "quantity"]
 
 
-# newwwwwww
 class TransactionDetailSerializer(serializers.ModelSerializer):
     transaction_items = ItemTransactionSerializer(many=True);
-
 
     class Meta:
         model = Transaction
         fields = "__all__"
 
-# //////////////////////////////////////////////////////////////////////
+
 class ProfileDetailViewSerializer(serializers.ModelSerializer):
     user = UserSerializer()
     transactions = TransactionDetailSerializer(many=True)
+    
     class Meta:
         model = Profile
         fields = [  
@@ -75,15 +68,10 @@ class ProfileDetailViewSerializer(serializers.ModelSerializer):
             'birth_date',
             'transactions'
         ]   
-        
 
-
-        def get_past_orders(self, obj):
-            orders = Transaction.objects.filter(user=obj.user, date__lt=date.today())
-            return OrderSerializer(orders, many=True).data
-
-
-
+    def get_past_orders(self, obj):
+        orders = Transaction.objects.filter(user=obj.user, date__lt=date.today())
+        return OrderSerializer(orders, many=True).data
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -94,23 +82,5 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         token['username'] = user.username
         token['first_name'] = user.first_name
         token['last_name'] = user.last_name
-        token['email'] = user.email
-        # token['birth_date'] = user.profile.birth_date
-        # token['phone_number'] = user.profile.phone_number
-        # token['image'] = user.profile.image.url
-        
+        token['email'] = user.email        
         return token
-
-# class CreditCardSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = CreditCard
-#         fields = "__all__"
-
-#  ////////////////////////////////////////////////////////////////////////////////////
-# after ordering (history)
-
-# class WalletSerializer(serializers.ModelSerializer):
-#     product = TransactionSerializer()
-#     class Meta:
-#         model = Transaction
-#         fields = '__all__'
