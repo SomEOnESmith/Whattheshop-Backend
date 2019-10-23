@@ -71,15 +71,19 @@ class ProfileDetailViewSerializer(serializers.ModelSerializer):
             'birth_date',
             'transactions'
         ] 
-        read_only_fields = ['transactions']
+        read_only_fields = ['username','transactions']
   # ////////////
     def update(self, instance, validated_data):
-        user_data = validated_data.pop('user', {})
-        transaction_data = validated_data.pop('transactions', {})
-        user_serializer = UserSerializer(instance.user, data=user_data, partial=True)
-        user_serializer.update(instance.user, user_data)
-        super().update(instance, validated_data)
-        return validated_data
+        user_data = validated_data.pop('user')
+        transactions_data = validated_data.pop('transactions')
+        instance.user.last_name = user_data.get('last_name', user_data['last_name'])
+        instance.user.email = user_data.get('email', user_data['email'])
+        instance.birth_date = validated_data.get('birth_date', instance.birth_date)
+        instance.phone_number = validated_data.get('phone_number', instance.phone_number)
+        instance.image = validated_data.get('image', instance.image)
+        instance.user.save()
+        instance.save()
+        return instance
   # ///////////
 
 

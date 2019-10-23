@@ -35,13 +35,12 @@ class ProfileDetailAPIView(APIView):
 
     def put(self, request):
         profile = Profile.objects.get(user=self.request.user)
-        serializer_class = ProfileDetailViewSerializer(profile, data=request.data)
+        serializer_class = ProfileDetailViewSerializer(data=request.data, instance=profile)
         if serializer_class.is_valid():
             serializer_class.save()
             return Response(serializer_class.data, status = status.HTTP_200_OK)
         return Response(serializer_class.errors, status=status.HTTP_400_BAD_REQUEST)
 # ////////////////////////
-
 
 
 class MyTokenObtainPairView(TokenObtainPairView):
