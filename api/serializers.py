@@ -13,13 +13,16 @@ class UserCreateSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
     class Meta:
         model = User
-        fields = ['username', 'password']
+        fields = ['username', 'password', 'first_name', 'last_name', 'email']
 
     def create(self, validated_data):
         new_user = User(**validated_data)
+        print(new_user)
         new_user.set_password(validated_data['password'])
         new_user.save()
-        Profile.objects.create(user=new_user)
+        profile = Profile.objects.get(user=new_user)
+        profile.phone_number = self.context['request'].data['phone_number']
+        profile.save()
         return validated_data
 
 
@@ -32,8 +35,7 @@ class CurrencyListSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = [  
-            'username',
+        fields = [
             'first_name',
             'last_name',
             'email',
@@ -43,12 +45,13 @@ class UserSerializer(serializers.ModelSerializer):
 class ItemTransactionSerializer(serializers.ModelSerializer):
     class Meta: 
         model = TransactionItem
-        fields = ["id","transaction", "quantity"]
+        fields = ["id","transaction", "quantity", "currency"]
 
 
 
 class TransactionDetailSerializer(serializers.ModelSerializer):
     transaction_items = ItemTransactionSerializer(many=True);
+
 
     class Meta:
         model = Transaction
@@ -67,11 +70,19 @@ class ProfileDetailViewSerializer(serializers.ModelSerializer):
             'phone_number',
             'birth_date',
             'transactions'
-        ]   
+        ] 
+        read_only_fields = ['transactions']
+  # ////////////
+    def update(self, instance, validated_data):
+        user_data = validated_data.pop('user', {})
+        transaction_data = validated_data.pop('transactions', {})
+        user_serializer = UserSerializer(instance.user, data=user_data, partial=True)
+        user_serializer.update(instance.user, user_data)
+        super().update(instance, validated_data)
+        return validated_data
+  # ///////////
 
-    def get_past_orders(self, obj):
-        orders = Transaction.objects.filter(user=obj.user, date__lt=date.today())
-        return OrderSerializer(orders, many=True).data
+
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
